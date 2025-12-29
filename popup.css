@@ -1,0 +1,526 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  width: 320px;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.container {
+  background: white;
+}
+
+header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+h1 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.3);
+  transition: 0.3s;
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #4CAF50;
+}
+
+input:checked + .slider:before {
+  transform: translateX(16px);
+}
+
+#statusText {
+  font-size: 12px;
+  font-weight: 500;
+  min-width: 50px;
+}
+
+.cookie-info {
+  padding: 14px;
+  text-align: center;
+  background: linear-gradient(to bottom, #667eea10, transparent);
+}
+
+.cookie-count-display {
+  margin-bottom: 8px;
+}
+
+.count-number {
+  font-size: 32px;
+  font-weight: 700;
+  color: #667eea;
+  line-height: 1;
+}
+
+.count-label {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.domain-status-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.current-domain {
+  font-size: 11px;
+  color: #888;
+  padding: 4px 8px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+}
+
+.status-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.status-badge.whitelisted {
+  background: #4CAF50;
+  color: white;
+  box-shadow: 0 1px 3px rgba(76, 175, 80, 0.3);
+}
+
+.status-badge.blacklisted {
+  background: #f44336;
+  color: white;
+  box-shadow: 0 1px 3px rgba(244, 67, 54, 0.3);
+}
+
+.status-badge.neutral {
+  background: #2196F3;
+  color: white;
+  box-shadow: 0 1px 3px rgba(33, 150, 243, 0.3);
+}
+
+.settings-section {
+  padding: 12px 14px;
+  border-top: 1px solid #e0e0e0;
+  background: #fafafa;
+}
+
+.settings-section h3 {
+  font-size: 12px;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 600;
+}
+
+.cleanup-mode-options {
+  display: flex;
+  flex-direction: row; /* Horizontal for compactness */
+  gap: 8px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center; /* Center aligned */
+  gap: 6px;
+  padding: 8px 10px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1; /* Distribute space */
+}
+
+.radio-option:hover {
+  border-color: #667eea;
+  background: #f9f9ff;
+}
+
+.radio-option input[type="radio"] {
+  margin-top: 0; /* Reset */
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+.radio-option input[type="radio"]:checked ~ .radio-label {
+  color: #667eea;
+}
+
+.radio-option:has(input:checked) {
+  border-color: #667eea;
+  background: #f0f2ff;
+}
+
+.radio-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;
+}
+
+.radio-label strong {
+  font-size: 12px;
+  color: #333;
+  line-height: 1.2;
+}
+
+.radio-label small {
+  font-size: 9px;
+  color: #888;
+  display: none; /* Hide description for extreme compactness, or keep if critical */
+}
+/* Let's keep small text but hidden on very small screens or just make it tiny block */
+.radio-label small {
+    display: block;
+    line-height: 1.1;
+}
+
+.checkbox-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px 10px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.checkbox-option:hover {
+  border-color: #667eea;
+  background: #f9f9ff;
+}
+
+.checkbox-option input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: #667eea;
+  width: 16px;
+  height: 16px;
+}
+
+.checkbox-option span {
+  font-size: 12px;
+  color: #333;
+  flex: 1;
+}
+
+.checkbox-option:has(input:checked) {
+  border-color: #667eea;
+  background: #f0f2ff;
+}
+
+.checkbox-option:has(input:checked) span {
+  color: #667eea;
+  font-weight: 500;
+}
+
+.actions {
+  padding: 0 14px 12px;
+}
+
+.btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-danger {
+  background: #f44336;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #d32f2f;
+}
+
+.btn-primary {
+  background: #667eea;
+  color: white;
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.btn-primary:hover {
+  background: #5568d3;
+}
+
+.btn-secondary {
+  background: #e0e0e0;
+  color: #333;
+  margin-bottom: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.btn-secondary:hover {
+  background: #d0d0d0;
+}
+
+.btn-remove {
+  background: #ff5252;
+  color: white;
+  border: none;
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 10px;
+  transition: all 0.2s;
+}
+
+.btn-remove:hover {
+  background: #ff1744;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+  background: #fafafa;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.tab-btn:hover {
+  color: #667eea;
+  background: #f0f0f0;
+}
+
+.tab-btn.active {
+  color: #667eea;
+  background: white;
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #667eea;
+}
+
+.tab-content {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.tab-pane {
+  display: none;
+  padding: 12px;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+.list-header h3 {
+  font-size: 14px;
+  margin-bottom: 2px;
+  color: #333;
+}
+
+.help-text {
+  font-size: 10px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.add-domain {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.add-domain input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+}
+
+.add-domain input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.domain-list {
+  list-style: none;
+  margin-top: 8px;
+}
+
+.domain-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: #f9f9f9;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  border: 1px solid #e0e0e0;
+}
+
+.domain-text {
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+  color: #333;
+}
+
+.empty-message {
+  text-align: center;
+  padding: 14px;
+  color: #999;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.cookie-details {
+  border-top: 1px solid #e0e0e0;
+  padding: 12px;
+  background: #fafafa;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.cookie-details h3 {
+  font-size: 12px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.cookie-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cookie-item {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.cookie-name {
+  font-weight: 600;
+  font-size: 11px;
+  margin-bottom: 4px;
+  color: #667eea;
+  font-family: 'Courier New', monospace;
+  word-break: break-all;
+}
+
+.cookie-info-text {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  font-size: 10px;
+  color: #666;
+}
+
+.cookie-info-text span {
+  background: #f5f5f5;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #aaa;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
