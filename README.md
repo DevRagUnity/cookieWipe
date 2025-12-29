@@ -4,32 +4,25 @@ CookieWipe is a Chrome extension that allows you to monitor cookies in real-time
 
 ## Features
 
-* 
-**Real-time Monitoring**: Watch cookies being added, changed, or removed as it happens.
+* **Real-time Monitoring**: Watch cookies being added, changed, or removed as it happens.
 
 
-* 
-**Cookie Count Badge**: The extension icon displays the number of cookies for the current site.
+* **Cookie Count Badge**: The extension icon displays the number of cookies for the current site.
 
 
-* 
-**Color-Coded Status**: The badge color changes based on domain status: Green (Whitelisted), Red (Blacklisted), or Blue (Neutral).
+* **Color-Coded Status**: The badge color changes based on domain status: Green (Whitelisted), Red (Blacklisted), or Blue (Neutral).
 
 
-* 
-**Automatic Cleanup**: Automatically deletes cookies when tabs are closed based on your rules.
+* **Automatic Cleanup**: Automatically deletes cookies when tabs are closed based on your rules.
 
 
-* 
-**Immediate Blocking**: "Immediate Mode" blocks blacklisted cookies as soon as they are set.
+* **Immediate Blocking**: "Immediate Mode" blocks blacklisted cookies as soon as they are set.
 
 
-* 
-**Retain Preferences**: Option to keep site settings like dark mode or language while deleting tracking cookies.
+* **Retain Preferences**: Option to keep site settings like dark mode or language while deleting tracking cookies.
 
 
-* 
-**Wildcard Support**: Manage entire subdomains using patterns like `*.example.com`.
+* **Wildcard Support**: Manage entire subdomains using patterns like `*.example.com`.
 
 
 
@@ -59,27 +52,22 @@ CookieWipe is a Chrome extension that allows you to monitor cookies in real-time
 
 ### Cleanup Modes
 
-* 
-**Immediate Mode**: Best for privacy; it blocks cookies instantly so they never persist.
+* **Immediate Mode**: Best for privacy; it blocks cookies instantly so they never persist.
 
 
-* 
-**On Tab Close Mode**: Useful if a site requires cookies to function while browsing, but you want them deleted once you leave.
+* **On Tab Close Mode**: Useful if a site requires cookies to function while browsing, but you want them deleted once you leave.
 
 
 
 ### Managing Domains
 
-* 
-**Whitelist**: Add domains here to ensure their cookies are always kept.
+* **Whitelist**: Add domains here to ensure their cookies are always kept.
 
 
-* 
-**Blacklist**: Add domains here to ensure their cookies are deleted.
+* **Blacklist**: Add domains here to ensure their cookies are deleted.
 
 
-* 
-**Manual Wipe**: Click **Delete Cookies Now** in the popup to instantly clear cookies for the current site.
+* **Manual Wipe**: Click **Delete Cookies Now** in the popup to instantly clear cookies for the current site.
 
 
 
