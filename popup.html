@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CookieWipe</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>CookieWipe</h1>
+      <div class="toggle-container">
+        <label class="switch">
+          <input type="checkbox" id="enableToggle" checked>
+          <span class="slider"></span>
+        </label>
+        <span id="statusText">Enabled</span>
+      </div>
+    </header>
+
+    <div class="cookie-info">
+      <div class="cookie-count-display">
+        <div class="count-number" id="cookieCount">0</div>
+        <div class="count-label">Cookies on this site</div>
+      </div>
+      <div class="domain-status-container">
+        <div class="current-domain" id="currentDomain">-</div>
+        <div class="status-badge" id="statusBadge"></div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>Blacklist Cleanup Mode</h3>
+      <div class="cleanup-mode-options">
+        <label class="radio-option">
+          <input type="radio" name="cleanupMode" value="immediate" checked>
+          <span class="radio-label">
+            <strong>Immediate</strong>
+            <small>Block cookies as they're set</small>
+          </span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="cleanupMode" value="onClose">
+          <span class="radio-label">
+            <strong>On Tab Close</strong>
+            <small>Delete cookies when tab closes</small>
+          </span>
+        </label>
+      </div>
+      <label class="checkbox-option">
+        <input type="checkbox" id="retainPreferences">
+        <span>Retain site preferences (theme, language, etc.)</span>
+      </label>
+    </div>
+
+    <div class="actions">
+      <button id="deleteNow" class="btn btn-danger">Delete Cookies Now</button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="whitelist">Whitelist</button>
+      <button class="tab-btn" data-tab="blacklist">Blacklist</button>
+    </div>
+
+    <div class="tab-content">
+      <div id="whitelist-tab" class="tab-pane active">
+        <div class="list-header">
+          <h3>Whitelisted Domains</h3>
+          <p class="help-text">Cookies from these domains will be kept when tabs close</p>
+        </div>
+        <div class="add-domain">
+          <input type="text" id="whitelistInput" placeholder="example.com or *.example.com">
+          <button id="addWhitelist" class="btn btn-primary">Add</button>
+        </div>
+        <button id="addCurrentToWhitelist" class="btn btn-secondary">Add Current Domain</button>
+        <ul id="whitelistList" class="domain-list"></ul>
+      </div>
+
+      <div id="blacklist-tab" class="tab-pane">
+        <div class="list-header">
+          <h3>Blacklisted Domains</h3>
+          <p class="help-text">Cookies from these domains will be deleted when tabs close</p>
+        </div>
+        <div class="add-domain">
+          <input type="text" id="blacklistInput" placeholder="example.com or *.example.com">
+          <button id="addBlacklist" class="btn btn-primary">Add</button>
+        </div>
+        <button id="addCurrentToBlacklist" class="btn btn-secondary">Add Current Domain</button>
+        <ul id="blacklistList" class="domain-list"></ul>
+      </div>
+    </div>
+
+    <div class="cookie-details">
+      <h3>Cookie Details</h3>
+      <div id="cookieDetailsList" class="cookie-list"></div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
