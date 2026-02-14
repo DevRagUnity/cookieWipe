@@ -19,6 +19,25 @@
       </div>
     </header>
 
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-icon" id="adBlockIcon">&#x1F6E1;</span>
+        <div class="stat-info">
+          <span class="stat-value" id="adsBlockedCount">0</span>
+          <span class="stat-label">Ads Blocked</span>
+        </div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-icon">&#x1F36A;</span>
+        <div class="stat-info">
+          <span class="stat-value" id="cookiesBlockedCount">0</span>
+          <span class="stat-label">Cookies Blocked</span>
+        </div>
+      </div>
+    </div>
+
     <div class="cookie-info">
       <div class="cookie-count-display">
         <div class="count-number" id="cookieCount">0</div>
@@ -28,6 +47,18 @@
         <div class="current-domain" id="currentDomain">-</div>
         <div class="status-badge" id="statusBadge"></div>
       </div>
+      <div class="tracking-info" id="trackingInfo" style="display: none;">
+        <span class="tracking-count" id="trackingCount">0</span> tracking cookies detected
+      </div>
+    </div>
+
+    <!-- Ad Blocker Section -->
+    <div class="settings-section">
+      <h3>Ad Blocker</h3>
+      <label class="checkbox-option">
+        <input type="checkbox" id="adBlockToggle" checked>
+        <span>Block ads and tracking scripts</span>
+      </label>
     </div>
 
     <div class="settings-section">
@@ -52,19 +83,91 @@
         <input type="checkbox" id="retainPreferences">
         <span>Retain site preferences (theme, language, etc.)</span>
       </label>
+      <label class="checkbox-option">
+        <input type="checkbox" id="notificationsToggle" checked>
+        <span>Show notifications on cookie activity</span>
+      </label>
     </div>
 
     <div class="actions">
       <button id="deleteNow" class="btn btn-danger">Delete Cookies Now</button>
+      <button id="cleanTrackers" class="btn btn-warning">Clean All Tracker Cookies</button>
     </div>
 
     <div class="tabs">
-      <button class="tab-btn active" data-tab="whitelist">Whitelist</button>
+      <button class="tab-btn active" data-tab="trackers">Trackers</button>
+      <button class="tab-btn" data-tab="whitelist">Whitelist</button>
       <button class="tab-btn" data-tab="blacklist">Blacklist</button>
     </div>
 
     <div class="tab-content">
-      <div id="whitelist-tab" class="tab-pane active">
+      <!-- Tracker Presets Tab -->
+      <div id="trackers-tab" class="tab-pane active">
+        <div class="list-header">
+          <h3>Tracker Cookie Presets</h3>
+          <p class="help-text">Toggle which tracker cookies to block automatically</p>
+        </div>
+        <div class="tracker-presets" id="trackerPresetsList">
+          <label class="tracker-preset-item" data-tracker="facebook">
+            <div class="preset-left">
+              <input type="checkbox" checked>
+              <span class="preset-name">Facebook</span>
+            </div>
+            <span class="preset-domains">*.facebook.com, *.fbcdn.net</span>
+          </label>
+          <label class="tracker-preset-item" data-tracker="instagram">
+            <div class="preset-left">
+              <input type="checkbox" checked>
+              <span class="preset-name">Instagram</span>
+            </div>
+            <span class="preset-domains">*.instagram.com</span>
+          </label>
+          <label class="tracker-preset-item" data-tracker="amazon">
+            <div class="preset-left">
+              <input type="checkbox" checked>
+              <span class="preset-name">Amazon</span>
+            </div>
+            <span class="preset-domains">*.amazon-adsystem.com</span>
+          </label>
+          <label class="tracker-preset-item" data-tracker="microsoft">
+            <div class="preset-left">
+              <input type="checkbox" checked>
+              <span class="preset-name">Microsoft</span>
+            </div>
+            <span class="preset-domains">*.clarity.ms, *.bat.bing.com</span>
+          </label>
+          <label class="tracker-preset-item" data-tracker="google">
+            <div class="preset-left">
+              <input type="checkbox" checked>
+              <span class="preset-name">Google Ads</span>
+            </div>
+            <span class="preset-domains">*.doubleclick.net, *.googlesyndication.com</span>
+          </label>
+          <label class="tracker-preset-item" data-tracker="twitter">
+            <div class="preset-left">
+              <input type="checkbox" checked>
+              <span class="preset-name">Twitter / X</span>
+            </div>
+            <span class="preset-domains">*.ads.twitter.com</span>
+          </label>
+          <label class="tracker-preset-item" data-tracker="tiktok">
+            <div class="preset-left">
+              <input type="checkbox" checked>
+              <span class="preset-name">TikTok</span>
+            </div>
+            <span class="preset-domains">*.analytics.tiktok.com</span>
+          </label>
+          <label class="tracker-preset-item" data-tracker="linkedin">
+            <div class="preset-left">
+              <input type="checkbox" checked>
+              <span class="preset-name">LinkedIn</span>
+            </div>
+            <span class="preset-domains">*.ads.linkedin.com</span>
+          </label>
+        </div>
+      </div>
+
+      <div id="whitelist-tab" class="tab-pane">
         <div class="list-header">
           <h3>Whitelisted Domains</h3>
           <p class="help-text">Cookies from these domains will be kept when tabs close</p>

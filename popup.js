@@ -1,27 +1,59 @@
-// Popup script for Cookiez extension
+// Popup script for CookieWipe extension
 
 let currentDomain = null;
+
+// Known tracking cookie name patterns (mirrors background.js)
+const TRACKING_COOKIE_PATTERNS = [
+  /^_fb[cp]$/i, /^_fbc$/i, /^_fbp$/i, /^fr$/i,
+  /^_ga/i, /^_gid$/i, /^_gcl/i, /^_gat/i,
+  /^IDE$/i, /^NID$/i, /^__gads$/i,
+  /^_uet/i, /^MUID$/i, /^ANONCHK$/i, /^_clck$/i, /^_clsk$/i,
+  /^ad-id$/i, /^ad-privacy$/i, /^session-id$/i,
+  /^_pin_unauth$/i, /^_tt_enable_cookie$/i, /^_ttp$/i,
+  /^li_sugr$/i, /^bcookie$/i, /^bscookie$/i,
+  /^personalization_id$/i, /^guest_id$/i, /^ct0$/i,
+];
+
+function isTrackingCookie(cookieName) {
+  return TRACKING_COOKIE_PATTERNS.some(pattern => pattern.test(cookieName));
+}
 
 // Initialize popup
 document.addEventListener('DOMContentLoaded', async () => {
   await loadSettings();
   await updateCookieCount();
+  await updateStats();
   setupEventListeners();
 });
 
 // Load settings from storage
 async function loadSettings() {
-  const result = await chrome.storage.sync.get(['whitelist', 'blacklist', 'enabled', 'cleanupMode', 'retainPreferences']);
+  const result = await chrome.storage.sync.get([
+    'whitelist', 'blacklist', 'enabled', 'cleanupMode',
+    'retainPreferences', 'adBlockEnabled', 'trackerPresets', 'notificationsEnabled'
+  ]);
 
   const whitelist = result.whitelist || [];
   const blacklist = result.blacklist || [];
   const enabled = result.enabled !== undefined ? result.enabled : true;
   const cleanupMode = result.cleanupMode || 'immediate';
   const retainPreferences = result.retainPreferences !== undefined ? result.retainPreferences : false;
+  const adBlockEnabled = result.adBlockEnabled !== undefined ? result.adBlockEnabled : true;
+  const notificationsEnabled = result.notificationsEnabled !== undefined ? result.notificationsEnabled : true;
+  const trackerPresets = result.trackerPresets || {
+    facebook: true, instagram: true, amazon: true, microsoft: true,
+    google: true, twitter: true, tiktok: true, linkedin: true
+  };
 
   // Update toggle
   document.getElementById('enableToggle').checked = enabled;
   updateStatusText(enabled);
+
+  // Update ad block toggle
+  document.getElementById('adBlockToggle').checked = adBlockEnabled;
+
+  // Update notifications toggle
+  document.getElementById('notificationsToggle').checked = notificationsEnabled;
 
   // Update cleanup mode radio buttons
   const radios = document.querySelectorAll('input[name="cleanupMode"]');
@@ -33,6 +65,15 @@ async function loadSettings() {
 
   // Update retain preferences checkbox
   document.getElementById('retainPreferences').checked = retainPreferences;
+
+  // Update tracker presets
+  document.querySelectorAll('.tracker-preset-item').forEach(item => {
+    const trackerKey = item.dataset.tracker;
+    const checkbox = item.querySelector('input[type="checkbox"]');
+    if (trackerKey && checkbox) {
+      checkbox.checked = trackerPresets[trackerKey] !== false;
+    }
+  });
 
   // Display lists
   displayList('whitelist', whitelist);
@@ -133,7 +174,16 @@ async function updateCookieCount() {
       currentDomain = response.domain;
 
       // Update status badge
-      await updateStatusBadge(response.domain);
+      await updateStatusBadge(response.domain, response.isTrackerDomain);
+
+      // Show tracking cookie info
+      const trackingInfo = document.getElementById('trackingInfo');
+      if (response.trackingCount > 0) {
+        trackingInfo.style.display = 'block';
+        document.getElementById('trackingCount').textContent = response.trackingCount;
+      } else {
+        trackingInfo.style.display = 'none';
+      }
 
       // Display cookie details
       displayCookieDetails(response.cookies);
@@ -141,8 +191,18 @@ async function updateCookieCount() {
   });
 }
 
-// Update status badge to show if domain is whitelisted/blacklisted
-async function updateStatusBadge(domain) {
+// Update stats display
+async function updateStats() {
+  chrome.runtime.sendMessage({ action: 'getStats' }, (response) => {
+    if (response) {
+      document.getElementById('adsBlockedCount').textContent = response.totalAdsBlocked;
+      document.getElementById('cookiesBlockedCount').textContent = response.totalCookiesBlocked;
+    }
+  });
+}
+
+// Update status badge to show if domain is whitelisted/blacklisted/tracker
+async function updateStatusBadge(domain, isTrackerDomain) {
   const statusBadge = document.getElementById('statusBadge');
 
   if (!domain) {
@@ -165,6 +225,9 @@ async function updateStatusBadge(domain) {
   } else if (isBlacklisted) {
     statusBadge.textContent = 'Blacklisted';
     statusBadge.className = 'status-badge blacklisted';
+  } else if (isTrackerDomain) {
+    statusBadge.textContent = 'Tracker';
+    statusBadge.className = 'status-badge tracker';
   } else {
     statusBadge.textContent = 'Neutral';
     statusBadge.className = 'status-badge neutral';
@@ -192,11 +255,22 @@ function displayCookieDetails(cookies) {
 
   cookies.forEach(cookie => {
     const cookieItem = document.createElement('div');
-    cookieItem.className = 'cookie-item';
+    const isTracker = isTrackingCookie(cookie.name);
+    cookieItem.className = 'cookie-item' + (isTracker ? ' tracking' : '');
 
     const cookieName = document.createElement('div');
     cookieName.className = 'cookie-name';
-    cookieName.textContent = cookie.name;
+
+    const nameText = document.createElement('span');
+    nameText.textContent = cookie.name;
+    cookieName.appendChild(nameText);
+
+    if (isTracker) {
+      const tag = document.createElement('span');
+      tag.className = 'cookie-tag tracker';
+      tag.textContent = 'Tracker';
+      cookieName.appendChild(tag);
+    }
 
     const cookieInfo = document.createElement('div');
     cookieInfo.className = 'cookie-info-text';
@@ -222,12 +296,23 @@ function setupEventListeners() {
     updateStatusText(enabled);
   });
 
+  // Ad block toggle
+  document.getElementById('adBlockToggle').addEventListener('change', async (e) => {
+    const adBlockEnabled = e.target.checked;
+    await chrome.storage.sync.set({ adBlockEnabled });
+  });
+
+  // Notifications toggle
+  document.getElementById('notificationsToggle').addEventListener('change', async (e) => {
+    const notificationsEnabled = e.target.checked;
+    await chrome.storage.sync.set({ notificationsEnabled });
+  });
+
   // Cleanup mode radio buttons
   document.querySelectorAll('input[name="cleanupMode"]').forEach(radio => {
     radio.addEventListener('change', async (e) => {
       const cleanupMode = e.target.value;
       await chrome.storage.sync.set({ cleanupMode });
-      console.log(`Cleanup mode changed to: ${cleanupMode}`);
     });
   });
 
@@ -235,7 +320,19 @@ function setupEventListeners() {
   document.getElementById('retainPreferences').addEventListener('change', async (e) => {
     const retainPreferences = e.target.checked;
     await chrome.storage.sync.set({ retainPreferences });
-    console.log(`Retain preferences: ${retainPreferences}`);
+  });
+
+  // Tracker preset toggles
+  document.querySelectorAll('.tracker-preset-item').forEach(item => {
+    const checkbox = item.querySelector('input[type="checkbox"]');
+    if (checkbox) {
+      checkbox.addEventListener('change', async () => {
+        const result = await chrome.storage.sync.get(['trackerPresets']);
+        const trackerPresets = result.trackerPresets || {};
+        trackerPresets[item.dataset.tracker] = checkbox.checked;
+        await chrome.storage.sync.set({ trackerPresets });
+      });
+    }
   });
 
   // Tab switching
@@ -294,8 +391,18 @@ function setupEventListeners() {
     chrome.runtime.sendMessage({ action: 'deleteCookiesNow' }, (response) => {
       if (response && response.success) {
         setTimeout(() => updateCookieCount(), 100);
-      } else if (response && response.error) {
-        console.error('Failed to delete cookies:', response.error);
+      }
+    });
+  });
+
+  // Clean all tracker cookies button
+  document.getElementById('cleanTrackers').addEventListener('click', async () => {
+    chrome.runtime.sendMessage({ action: 'cleanTrackerCookies' }, (response) => {
+      if (response && response.success) {
+        setTimeout(() => {
+          updateCookieCount();
+          updateStats();
+        }, 100);
       }
     });
   });
@@ -316,5 +423,8 @@ function switchTab(tabName) {
   document.getElementById(`${tabName}-tab`).classList.add('active');
 }
 
-// Refresh cookie count periodically
-setInterval(updateCookieCount, 2000);
+// Refresh cookie count and stats periodically
+setInterval(() => {
+  updateCookieCount();
+  updateStats();
+}, 2000);

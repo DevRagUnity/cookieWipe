@@ -1,19 +1,37 @@
 {
   "manifest_version": 3,
-  "name": "CookieWipe - Cookie Monitor & Cleanup",
-  "version": "1.0.0",
-  "description": "Monitor cookies and automatically clean them up based on whitelist/blacklist rules",
+  "name": "CookieWipe - Cookie Monitor, Cleanup & Ad Blocker",
+  "version": "2.0.0",
+  "description": "Block ads, monitor cookies, and intelligently clean tracking cookies from Facebook, Instagram, Amazon, Microsoft and more",
   "permissions": [
     "cookies",
     "storage",
     "tabs",
-    "activeTab"
+    "activeTab",
+    "declarativeNetRequest",
+    "declarativeNetRequestFeedback"
   ],
   "host_permissions": [
     "<all_urls>"
   ],
   "background": {
     "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "adblock_rules",
+        "enabled": true,
+        "path": "adblock_rules.json"
+      }
+    ]
   },
   "action": {
     "default_popup": "popup.html",
